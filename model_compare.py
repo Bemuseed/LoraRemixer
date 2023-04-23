@@ -69,6 +69,7 @@ class Application:
 
     def sort_by_score(self, scores, models, model_names, flattened_models):
         zipped = zip(scores, models, model_names, flattened_models)
+        # Zips and unzips so that all four lists are rearranged identically
         sorted_models_and_scores = sorted(zipped, reverse=True, key=operator.itemgetter(0))
         scores = [i[0] for i in  sorted_models_and_scores]
         models = [i[1] for i in  sorted_models_and_scores]
@@ -78,9 +79,10 @@ class Application:
 
     def combine_names(self, a, b, ratio):
         ratio = str(ratio)
-        ratio = ratio[0] + "_" + ratio[2:]
+        ratio = ratio[0] + "_" + ratio[2:] # Switching the . for a _ to avoid filetype confusion
         return "(" + a + ")" + "-" + "(" + b + ") " + ratio
 
+    # Generates a list of pairs of indeces for each unique pair of models in the pool
     def get_unique_pairings(self):
         model_combos = []
         for i in range(len(self.models) + 1):
@@ -89,15 +91,14 @@ class Application:
                     model_combos.append(comb)
         return list(set(model_combos))
     
+    # Returns a list of every ratio for the given number of desired ratios
     def get_ratio_list(self, ratios):
         ratio_list = []
         for i in range(ratios):
             ratio_list.append(round((i + 1) / (ratios + 1), 2))
-        print(ratio_list)
         return ratio_list
 
     def merge_all_and_compare(self, ratios): 
-        # Find every unique pairing of indeces
         print("Finding model combinations...") 
         ratio_list = self.get_ratio_list(ratios)
         model_combos = self.get_unique_pairings()
