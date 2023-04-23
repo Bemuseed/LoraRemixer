@@ -18,7 +18,7 @@ MENU_STR = """
 [Q] Quit
 """
 
-PATHS=["david_mack.ckpt", "donata_giancola.ckpt", "alan_lee.ckpt", "vincent_di_fate.ckpt", "ed_mell.ckpt", "michael_garmash.ckpt"]
+INITIAL_PATHS=[]
 
 def remove_filetype(filename):
     for i in range(len(filename)):
@@ -134,14 +134,22 @@ class Application:
         
         return merged_models, merged_model_names, flattened_merged_models
 
-    def process(self, model_paths):
-        self.load_from_disk(model_paths)
-        cont = True
-        while cont:
+    def display_pool(self):
+        if self.models == []:
+            print("Current model pool is empty.")
+        else:
             print("\nCurrent model pool is:")
             for i in self.model_names:
                 print("\t" + i)
 
+    def process(self, model_paths=[]):
+        if model_paths:
+            self.load_from_disk(model_paths)
+
+        cont = True
+        while cont:
+            self.display_pool()
+            
             choice = self.menu()
 
             if choice == "1":
@@ -226,7 +234,3 @@ class Application:
                 sure = input("Are you sure? Models in the pool that aren't saved to disk will be lost. [y/n] ").lower()
                 if sure == "y" or sure == "yes":
                     cont = False
-
-if __name__ == "__main__":
-    a = Application()
-    a.process(PATHS)
